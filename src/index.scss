@@ -5,13 +5,14 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Fira Code", monospace;
 }
 
 :root {
   --blackish: #151515;
   --orange1: #d45101;
   --orange2: #f07a00;
+  --green: #7cfc00;
 }
 
 html {
@@ -71,4 +72,55 @@ html {
       scale: 1.05;
     }
   }
+  .check_paste {
+    margin-top: 5em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    span {
+      margin-top: 1em;
+      margin-bottom: 5em;
+      background-color: var(--blackish);
+      padding: 1em;
+      border-radius: 5px;
+      color: var(--orange2);
+    }
+  }
+  .inpt {
+    font-family: "Fira Code", monospace;
+    color: var(--orange1);
+    background-color: var(--blackish);
+    border: none;
+    outline: none;
+    padding: 0.5em 1.5em;
+    font-size: 1em;
+    border-radius: 10px;
+  }
+  .ok {
+    margin-top: 1.5em;
+    border: none;
+    border-radius: 50px;
+    padding: 1em 2.5em;
+    color: var(--orange1);
+    background-color: var(--blackish);
+    font-size: 14px;
+    transition: 0.1s;
+    cursor: pointer;
+  }
+  .ok:hover {
+    color: var(--orange2);
+    scale: 1.05;
+  }
+}
+
+.idd {
+  margin-top: 1em;
+  color: var(--green);
+}
+
+.paste1 {
+  width: 350px;
+  height: auto;
+  word-wrap: break-word;
 }

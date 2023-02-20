@@ -1,12 +1,17 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
+import { useEffect, useState, useRef } from "react";
 import LOGO from "./assets/cat.png";
+import axios from "axios";
 
 function App() {
   const [msg, setMsg] = useState("");
 
   const handleMsg = (event: any) => {
     setMsg(event.target.value);
+  };
+  const [pasteId, setPasteId] = useState("");
+
+  const handlePasteId = (event: any) => {
+    setPasteId(event.target.value);
   };
 
   function makeid(length: number) {
@@ -21,24 +26,52 @@ function App() {
     }
     return result;
   }
-  const currentDate = new Date();
+  const [id, setID] = useState("");
 
-  const currentDayOfMonth = currentDate.getDate();
-  const currentMonth = currentDate.getMonth(); // Be careful! January is 0, not 1
-  const currentYear = currentDate.getFullYear();
-  const currentHour = currentDate.getHours();
-  const currentMinutes = currentDate.getMinutes();
+  function AddPaste() {
+    const id = makeid(10);
+    setID(id);
+    const date = Date.now();
+    const data = JSON.stringify({
+      id: id,
+      msg: msg,
+      timestamp: date,
+    });
+    axios.post("http://localhost:4000/addPaste", data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
 
-  const dateString =
-    currentDayOfMonth +
-    "-" +
-    (currentMonth + 1) +
-    "-" +
-    currentYear +
-    "  ||  " +
-    currentHour +
-    "-" +
-    currentMinutes;
+  const [paste, setPaste] = useState("");
+
+  const data2 = JSON.stringify({
+    pasteId: pasteId,
+  });
+
+  function getPaste() {
+    axios
+      .post("http://localhost:4000/getPaste", data2, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res.data[0].paste);
+        setPaste(res.data[0].paste);
+      });
+  }
+
+  useEffect(() => {
+    setPaste(paste);
+  }, [paste]);
+
+  const inputRef = useRef(null);
+  const onButtonClick = () => {
+    // @ts-ignore (us this comment if typescript raises an error)
+    inputRef.current.value = "";
+  };
 
   return (
     <div className="App">
@@ -49,19 +82,33 @@ function App() {
         </div>
       </div>
       <div className="paste">
-        <textarea placeholder="Paste here..." onChange={handleMsg}></textarea>
+        <textarea
+          ref={inputRef}
+          placeholder="Paste here..."
+          onChange={handleMsg}
+        ></textarea>
         <button
           className="btn"
           onClick={() => {
-            const id = makeid(10);
-            console.log("msg: " + msg);
-            console.log("id: " + id);
-            console.log("timestamp: " + dateString);
-            // make a post request with msg and id as parameters.
+            AddPaste();
+            onButtonClick();
+            setMsg("");
           }}
         >
           Create new paste
         </button>
+        <span className="idd">Your paste ID: {id}</span>
+      </div>
+      <div className="check_paste">
+        <input
+          onChange={handlePasteId}
+          className="inpt"
+          placeholder="Paste ID..."
+        />
+        <button className="ok" onClick={getPaste}>
+          Check
+        </button>
+        <span className="paste1">{paste}</span>
       </div>
     </div>
   );
